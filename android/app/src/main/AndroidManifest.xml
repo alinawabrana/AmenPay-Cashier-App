@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" android:required="false" />
     <application
         android:label="AmenPay Cashier"
-        android:name="${applicationName}"
+        android:name=".AmenPayApplication"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

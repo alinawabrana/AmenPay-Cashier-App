@@ -5,6 +5,12 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+repositories {
+    flatDir {
+        dirs("libs")
+    }
+}
+
 android {
     namespace = "com.example.amenpay_cashir_app"
     compileSdk = flutter.compileSdkVersion
@@ -28,6 +34,10 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        ndk {
+            abiFilters += listOf("armeabi-v7a")
+        }
     }
 
     buildTypes {
@@ -35,8 +45,22 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+            // Vendor SDKs (Leshun palm/NFC) rely on reflection/native bindings.
+            // Keep release runtime behavior aligned with debug to avoid R8 breakage.
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
+
+    packaging {
+        jniLibs {
+            excludes += listOf(
+                "**/arm64-v8a/*.so",
+                "lib/arm64-v8a/*.so",
+            )
+        }
+    }
+
 }
 
 flutter {
@@ -44,7 +68,5 @@ flutter {
 }
 
 dependencies {
-    implementation(files("../../Hardware/leshun_plam_v2.10/libs/BaseLine-1.00.aar"))
-    implementation(files("../../Hardware/leshun_plam_v2.10/libs/ShunPalm-2.01.aar"))
-    implementation(files("../../Hardware/leshun_plam_v2.10/libs/ShunPalm-LS2-2.10.aar"))
+    implementation(files("libs/com.leshun.hwadapter_1.13.jar"))
 }

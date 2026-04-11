@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:amenpay_cashir_app/screens/login_screen.dart';
+import 'package:amenpay_cashir_app/l10n/app_localizations.dart';
+import 'package:amenpay_cashir_app/screens/home_screen.dart';
+import 'package:amenpay_cashir_app/screens/welcome_screen.dart';
+import 'package:amenpay_cashir_app/services/auth_service.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -19,13 +22,18 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Future<void> _navigateToLogin() async {
     await Future.delayed(const Duration(milliseconds: 2500));
     if (!mounted) return;
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (_) => const LoginScreen()));
+    final loggedIn = await AuthService.isLoggedIn();
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => loggedIn ? const HomeScreen() : const WelcomeScreen(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
       body: SafeArea(
@@ -90,10 +98,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'AmenPay Cashier',
+                  Text(
+                    l10n.cashierAppName,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
                       height: 32 / 24,
@@ -102,10 +110,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Point of Sale System',
+                  Text(
+                    l10n.posSystem,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       height: 24 / 16,
@@ -138,10 +146,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
                     strokeWidth: 2,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Initializing secure connection...',
+                  Text(
+                    l10n.loadingInitializingConnection,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       height: 20 / 14,
@@ -152,11 +160,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
                   const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.lock, size: 14, color: Color(0xFF238EC2)),
-                      SizedBox(width: 6),
+                    children: [
+                      const Icon(
+                        Icons.lock,
+                        size: 14,
+                        color: Color(0xFF238EC2),
+                      ),
+                      const SizedBox(width: 6),
                       Text(
-                        '256-bit Encryption',
+                        l10n.loadingEncryption,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,
@@ -169,10 +181,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Version 1.0.0',
+                  Text(
+                    l10n.loadingVersion,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       height: 18 / 12,
